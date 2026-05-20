@@ -1,0 +1,11 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Local environment files
+.env
+/hello_world/.env
+
+# IDE / editor cache
+.vs/
