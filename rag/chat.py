@@ -9,7 +9,7 @@ load_dotenv(Path(__file__).parent / '.env')  # Load environment variables from .
 client = OpenAI()
 
 # Vector Embeddings
-embeding_model = OpenAIEmbeddings(model="text-embedding-3-large")
+embeding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # Vector DB connection
 vector_db = QdrantVectorStore.from_existing_collection(
@@ -24,17 +24,24 @@ user_query = input("Enter your query: ")
 # Relevant search(chuncks) in vector DB
 search_result = vector_db.similarity_search(query=user_query, k=5)
 
-# context ="\n\n\n".join([f"Page Content: {result.page_content}\nPage Number: {result.metadata['page_label']}\nFile Location: {result.metadata['source']}" for result in search_result])
+context ="\n\n\n".join([f"Page Content: {result.page_content}\nPage Number: {result.metadata['page_label']}\nFile Location: {result.metadata['source']}" for result in search_result])
 
-context = "\n\n".join([
-    result.page_content
-    for result in search_result
-])
+# context = "\n\n".join(
+#     result.page_content
+#     for result in search_result
+# )
 
-print("========== RETRIEVED CONTEXT ==========")
-print(context)
+# for result in search_result:
+#     print(
+#         f"Page Content: {result.page_content}\n"
+#         f"Page Number: {result.metadata['page_label']}\n"
+#         f"File Location: {result.metadata['source']}"
+#     )
 
-SYSTEM_PROMPT ="""
+# print("========== RETRIEVED CONTEXT ==========")
+# print(context)
+
+SYSTEM_PROMPT =f"""
 You are an expert assistant in resolving user queries using existing context retrieved from pdf files along with page_content, page_number.
 You should only answer the question based on the given context. 
 
@@ -48,5 +55,5 @@ response = client.chat.completions.create(
         {"role": "user", "content": user_query},
     ]
 )
-
+print("========== RETRIEVED RESULT ==========")
 print(response.choices[0].message.content)
