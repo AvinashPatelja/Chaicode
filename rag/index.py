@@ -16,16 +16,13 @@ loader = PyPDFLoader(file_path=pdf_path)
 docs = loader.load()
 
 # STEP2 -> Split Documents into smaller chunks
-# -> pip install -qU langchain-text-splitter
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 chunks = text_splitter.split_documents(docs)
 
 # STEP3 -> Vector Embeddings
-# ->pip install -qU langchain-openai
 embeding_model = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # STEP4 -> Create Vector Store and Indexing
-# -> pip install -qU langchain-qdrant
 vector_store = QdrantVectorStore.from_documents(
     documents=chunks,
     embedding=embeding_model,
